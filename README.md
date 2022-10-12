@@ -2,7 +2,7 @@
 # in phpmyadmin, create database mpvwallet
 # import mpvwallet.sql
 # endpoints:
-# 1. /wallet/login
+ 1. /wallet/login
   method: POST
   body: {
     "email":"ajib@gmail.com",
