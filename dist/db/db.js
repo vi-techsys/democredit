@@ -31,7 +31,7 @@ const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.db = mysql2_1.default.createConnection({
-    host: process.env.DBHOST,
+    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PWD,
     database: process.env.DB_NAME

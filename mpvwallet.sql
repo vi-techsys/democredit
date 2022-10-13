@@ -34,7 +34,7 @@ CREATE TABLE `mpvaccount` (
   `middlename` varchar(50) DEFAULT NULL,
   `email` varchar(50) NOT NULL,
   `phone` varchar(15) NOT NULL,
-  `date_registered` date DEFAULT curdate(),
+  `date_registered` timestamp DEFAULT current_timestamp,
   `password` varchar(500) NOT NULL DEFAULT '12345'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -57,7 +57,7 @@ CREATE TABLE `mpvwallet` (
   `walletid` bigint(20) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `walletbalance` decimal(18,2) DEFAULT 0.00,
-  `date_opened` date DEFAULT curdate()
+  `date_opened` timestamp DEFAULT current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `transactions` (
   `walletbalance` decimal(18,2) DEFAULT 0.00,
   `type` varchar(10) NOT NULL,
   `source` varchar(500) NOT NULL,
-  `date_created` timestamp NULL DEFAULT current_timestamp(),
+  `date_created` timestamp DEFAULT current_timestamp(),
   `destination` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
