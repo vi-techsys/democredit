@@ -55,7 +55,7 @@ function loggedIn(req, res, next) {
         if (row.length != 0) {
             let currenTime = Math.floor(Date.now() / 1000);
             let lastTime = row[0].time;
-            console.log(row);
+            // console.log(row);
             console.log("Currnt" + currenTime);
             console.log("Last" + lastTime);
             //if no activities for 5 mins
@@ -195,7 +195,7 @@ router.post("/fundwallet", loggedIn, (req, res) => {
                 });
             }
             const rowwallet = results;
-            console.log(rowwallet);
+            // console.log(rowwallet);
             if (rowwallet.length != 0) {
                 let balance = Number(amount) + Number(rowwallet[0].walletbalance);
                 db_1.db.query("update mpvwallet set walletbalance = ? where user_id=?", [balance, id], (err, result) => {
@@ -366,7 +366,7 @@ router.post("/withdraw", loggedIn, (req, res) => {
                 });
             }
             const rowwallet = results;
-            console.log(rowwallet);
+            // console.log(rowwallet);
             if (rowwallet.length != 0) {
                 if (Number(rowwallet[0].walletbalance) < Number(amount)) {
                     db_1.db.rollback(() => {
