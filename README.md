@@ -44,6 +44,7 @@ CREATE TABLE `session` (
 PRIMARY KEY (`token`)
 );
 
+#configure environment variables
 # endpoints:
 
 1.  /wallet/login
