@@ -6,6 +6,9 @@ import {router} from './routes/router';
 const app = express();
 dotenv.config();
 app.use(bodyParser.json());
+app.get("/test",(req:Request,res:Response)=>{
+res.status(200).json({"message": "hello"});
+})
 app.use("/wallet",router);
 app.listen(process.env.PORT, ()=>{
     console.log("Listening on port" + process.env.PORT);
