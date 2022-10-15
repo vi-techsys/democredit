@@ -315,7 +315,7 @@ router.post("/funduserwallet", loggedIn, (req, res) => {
                         throw err;
                     });
                 }
-                db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,destination) values(?,?,?,?,?)", [id, amount, balance, "transfer", user_id], (err, result) => {
+                db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,destination,source) values(?,?,?,?,?,?)", [id, amount, balance, "transfer", user_id, "wallet"], (err, result) => {
                     if (err) {
                         db_1.db.rollback(() => {
                             res.status(500).json({
@@ -335,9 +335,8 @@ router.post("/funduserwallet", loggedIn, (req, res) => {
                                 throw err;
                             });
                         }
-                        console.log("id" + id);
                         let userWallet = yield viewwallet(user_id);
-                        db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,source) values(?,?,?,?,?)", [user_id, amount, userWallet.walletbalance, "receive", id], (err, result) => {
+                        db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,source) values(?,?,?,?,?)", [user_id, amount, userWallet.walletbalance, "receive", id,], (err, result) => {
                             if (err) {
                                 db_1.db.rollback(() => {
                                     res.status(500).json({

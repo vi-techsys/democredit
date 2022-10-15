@@ -304,7 +304,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
             }
             db.query(
               "insert into transactions(user_id,amount,walletbalance,type,destination,source) values(?,?,?,?,?,?)",
-              [id, amount, balance, "transfer", user_id,"wallet"],
+              [id, amount, balance, "transfer", user_id,id],
               (err, result) => {
                 if (err) {
                   db.rollback(() => {
