@@ -335,6 +335,7 @@ router.post("/funduserwallet", loggedIn, (req, res) => {
                                 throw err;
                             });
                         }
+                        console.log("id" + id);
                         let userWallet = yield viewwallet(user_id);
                         db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,source) values(?,?,?,?,?)", [user_id, amount, userWallet.walletbalance, "receive", id], (err, result) => {
                             if (err) {

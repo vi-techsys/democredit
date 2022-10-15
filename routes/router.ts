@@ -303,8 +303,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
               });
             }
             db.query(
-              "insert into transactions(user_id,amount,walletbalance,type,destination) values(?,?,?,?,?)",
-              [id, amount, balance, "transfer", user_id],
+              "insert into transactions(user_id,amount,walletbalance,type,destination,source) values(?,?,?,?,?,?)",
+              [id, amount, balance, "transfer", user_id,"wallet"],
               (err, result) => {
                 if (err) {
                   db.rollback(() => {
@@ -331,7 +331,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                     let userWallet = await viewwallet(user_id) as Wallet;
                     db.query(
                       "insert into transactions(user_id,amount,walletbalance,type,source) values(?,?,?,?,?)",
-                      [user_id, amount, userWallet.walletbalance, "receive", id],
+                      [user_id, amount, userWallet.walletbalance, "receive", id,],
                       (err, result) => {
                         if (err) {
                           db.rollback(() => {
