@@ -11,6 +11,9 @@ export const create =async (mpvaccount:Account, callback: Function) => {
       (err, result) => {
         if (err) {callback(err)};
         const insertId = (<OkPacket> result).insertId;
+        //create account wallet
+        const sql ="insert into mpvwallet (user_id, walletbalance) values(?,?)";
+        db.query(sql, [insertId,0], (err,results)=>{});
         callback(null,mpvaccount);
       }
     );

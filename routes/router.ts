@@ -47,6 +47,19 @@ db.query(sql, [token],(err, results)=>{
 };
 router.post("/register",async (req:Request, res:Response)=>{
     const account:Account = req.body;
+    //check email and phone
+  const check_sql ="select * from mpvaccount where email =? or phone =?";
+  db.query(check_sql,[account.email,account.phone], (err,results)=>{
+  if(err){
+    return res.status(500).json({error: err.message, response:null});
+  }
+   const check_result = <RowDataPacket[]>results;
+   if(check_result.length>0)
+   {
+    res.status(403).json({error:"Account already exists",response:null});
+    return;
+   }
+  });
     walletService.create(account,(err:Error, account:Account)=>{
         if(err){
             return res.status(500).json({error: err.message, response:null});
@@ -54,6 +67,7 @@ router.post("/register",async (req:Request, res:Response)=>{
         res.status(200).json({error:null,response: account});
     })
 })
+
 
 router.get("/",(req:Request, res:Response)=>{
 walletService.accounts((err:Error,results:RowDataPacket)=>{
@@ -86,6 +100,11 @@ router.get("/:id",loggedIn, async (req:Request, res:Response)=>{
     res.status(200).json({"accounts":results});
     })*/
     let walletrow = await viewwallet(user_id);
+    if(walletrow==null)
+    {
+      res.status(404).json({error:"User not found",response:null});
+      return;
+    }
     res.status(200).json({error:null,response:walletrow});
     })
     router.post("/viewwallet", loggedIn, async (req:Request, res:Response) => {
@@ -94,7 +113,7 @@ router.get("/:id",loggedIn, async (req:Request, res:Response)=>{
         if (walletrow != null) {
           res.status(200).json({ error: null, response: walletrow });
         } else {
-          res.status(200).json({
+          res.status(404).json({
             error: "User wallet not found",
             response: null,
           });
@@ -160,7 +179,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
         if (err) {
           db.rollback(() => {
             res.status(404).json({
-              error: "Process terminated. Fetch user",
+              error: "Process terminated. Transaction rolled back",
               response: [],
             });
             throw err;
@@ -177,7 +196,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
               if (err) {
                 db.rollback(() => {
                   res.status(404).json({
-                    error: "Process terminated. Update wallet",
+                    error: "Process terminated. Transaction rolled back",
                     response: [],
                   });
                   throw err;
@@ -190,7 +209,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                   if (err) {
                     db.rollback(() => {
                       res.status(404).json({
-                        error: "Process terminated. Save transaction",
+                        error: "Process terminated. Transaction rolled back",
                         response: [],
                       });
                       throw err;
@@ -226,8 +245,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
     db.beginTransaction((err) => {
       if (err) {
         db.rollback(() => {
-          res.status(404).json({
-            error: "Process terminated. Fetch user",
+          res.status(500).json({
+            error: "Process terminated. Transaction rolled back",
             response: [],
           });
           throw err;
@@ -242,7 +261,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
         if (err) {
           db.rollback(() => {
             res.status(500).json({
-              error: "Process terminated. Fetch user",
+              error: "Process terminated. Transaction rolled back",
               response: [],
             });
             throw err;
@@ -257,7 +276,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
           return;
         }
         if (rowwallet[0].walletbalance < amount) {
-          res.status(401).json({
+          res.status(400).json({
             error: "Wallet Balance is not sufficient",
             response: [],
           });
@@ -271,8 +290,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
           (err, result) => {
             if (err) {
               db.rollback(() => {
-                res.status(401).json({
-                  error: "Process terminated. Update wallet",
+                res.status(500).json({
+                  error: "Process terminated. Transaction rolled back",
                   response: [],
                 });
                 throw err;
@@ -284,8 +303,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
               (err, result) => {
                 if (err) {
                   db.rollback(() => {
-                    res.status(401).json({
-                      error: "Process terminated. Saving fun transact",
+                    res.status(500).json({
+                      error: "Process terminated. Transaction rolled back",
                       response: [],
                     });
                     throw err;
@@ -297,8 +316,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                   async (err, result) => {
                     if (err) {
                       db.rollback(() => {
-                        res.status(401).json({
-                          error: "Process terminated. Update wallet",
+                        res.status(500).json({
+                          error: "Process terminated. Transaction rolled back",
                           response: [],
                         });
                         throw err;
@@ -311,8 +330,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                       (err, result) => {
                         if (err) {
                           db.rollback(() => {
-                            res.status(400).json({
-                              error: "Process terminated. Saving receive",
+                            res.status(500).json({
+                              error: "Process terminated. Transaction rolled back",
                               response: [],
                             });
                             throw err;
@@ -321,8 +340,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                         db.commit((err) => {
                           if (err) {
                             db.rollback(() => {
-                              res.status(401).json({
-                                error: "Process terminated. commit",
+                              res.status(500).json({
+                                error: "Process terminated. Transaction rolled back",
                                 response: [],
                               });
                               throw err;
@@ -356,8 +375,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
       db.query(sql, (err, results) => {
         if (err) {
           db.rollback(() => {
-            res.status(404).json({
-              error: "Process terminated. Fetch user",
+            res.status(500).json({
+              error: "Process terminated. Transaction rolled back",
               response: [],
             });
             throw err;
@@ -369,7 +388,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
             if(Number(rowwallet[0].walletbalance)<Number(amount))
             {
                 db.rollback(() => {
-                    res.status(404).json({
+                    res.status(400).json({
                       error: "Insufficient balance in wallet",
                       response: [],
                     });
@@ -383,8 +402,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
             (err, result) => {
               if (err) {
                 db.rollback(() => {
-                  res.status(404).json({
-                    error: "Process terminated. Update wallet",
+                  res.status(500).json({
+                    error: "Process terminated. Transaction rolled back",
                     response: [],
                   });
                   throw err;
@@ -396,8 +415,8 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                 (err, result) => {
                   if (err) {
                     db.rollback(() => {
-                      res.status(404).json({
-                        error: "Process terminated. Save transaction",
+                      res.status(500).json({
+                        error: "Process terminated. Transaction rolled back",
                         response: [],
                       });
                       throw err;
@@ -406,7 +425,7 @@ router.post("/fundwallet", loggedIn, (req:Request, res:Response) => {
                   db.commit((err) => {
                     if (err) {
                       db.rollback(() => {
-                        res.status(404).json({
+                        res.status(500).json({
                           error: "Process terminated. Try again",
                           response: [],
                         });

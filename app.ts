@@ -6,7 +6,7 @@ import {router} from './routes/router';
 const app = express();
 dotenv.config();
 app.use(bodyParser.json());
-app.get("/",(req:Request,res:Response)=>{
+app.use("/",(req:Request,res:Response)=>{
 res.status(200).json({"message": "hello"});
 })
 app.use("/wallet",router);

@@ -33,7 +33,7 @@ const router_1 = require("./routes/router");
 const app = (0, express_1.default)();
 dotenv.config();
 app.use(bodyParser.json());
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).json({ "message": "hello" });
 });
 app.use("/wallet", router_1.router);
