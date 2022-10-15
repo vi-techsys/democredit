@@ -23,7 +23,11 @@ const create = (mpvaccount, callback) => __awaiter(void 0, void 0, void 0, funct
             callback(err);
         }
         ;
+        // console.log(result);
         const insertId = result.insertId;
+        //create account wallet
+        const sql = "insert into mpvwallet (user_id, walletbalance) values(?,?)";
+        db_1.db.query(sql, [insertId, 0], (err, results) => { });
         callback(null, mpvaccount);
     });
 });

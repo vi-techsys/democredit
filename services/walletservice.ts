@@ -9,7 +9,9 @@ export const create =async (mpvaccount:Account, callback: Function) => {
       sql,
       [mpvaccount.firstname,mpvaccount.lastname,mpvaccount.middlename,mpvaccount.email,mpvaccount.phone,passwordHash],
       (err, result) => {
-        if (err) {callback(err)};
+        if (err) {callback(err);
+        };
+       // console.log(result);
         const insertId = (<OkPacket> result).insertId;
         //create account wallet
         const sql ="insert into mpvwallet (user_id, walletbalance) values(?,?)";

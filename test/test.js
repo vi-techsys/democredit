@@ -25,15 +25,15 @@ describe("Demo credit test", (done) => {
         lastname: "Bella",
         middlename: "Olusola",
         password: "12345",
-        email: "rockbell@gmail.com",
-        phone: "08830122221",
+        email: "rockbell1@gmail.com",
+        phone: "08830122222321",
       })
       .expect("Content-type", /json/)
-      .expect(200)
+      .expect(403)
       .end((err, res) => {
         //console.log(err);
         console.log(res);
-        res.status.should.equal(200);
+        res.status.should.equal(403);
       });
     console.log("register endpoint");
     //  console.log(res.body);

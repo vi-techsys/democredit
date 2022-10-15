@@ -51,21 +51,26 @@ router.post("/register",async (req:Request, res:Response)=>{
   const check_sql ="select * from mpvaccount where email =? or phone =?";
   db.query(check_sql,[account.email,account.phone], (err,results)=>{
   if(err){
-    return res.status(500).json({error: err.message, response:null});
+     res.status(500).json({error: err.message, response:null});
+     return
   }
    const check_result = <RowDataPacket[]>results;
    if(check_result.length>0)
    {
-    res.status(403).json({error:"Account already exists",response:null});
+   res.status(403).json({error:"Account already exists",response:null});
     return;
    }
-  });
+   else
+   {
     walletService.create(account,(err:Error, account:Account)=>{
-        if(err){
-            return res.status(500).json({error: err.message, response:null});
-        }
-        res.status(200).json({error:null,response: account});
-    })
+      if(err){
+           res.status(500).json({error: err.message, response:null});
+           return;
+      }
+      res.status(200).json({error:null,response: account});
+  })
+   }
+  });
 })
 
 
