@@ -44,6 +44,7 @@ CREATE TABLE `session` (
 PRIMARY KEY (`token`)
 );
 
+#configure environment variables
 # endpoints:
 
 1.  /wallet/login
@@ -66,7 +67,7 @@ PRIMARY KEY (`token`)
     "phone" : "088309851884"
     }
     response: returns account object after successulf register
-3.  /wallet/id
+3.  /wallet?id=
     method:GET
     header: token
     response: returns wallet object
