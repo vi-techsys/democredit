@@ -315,7 +315,7 @@ router.post("/funduserwallet", loggedIn, (req, res) => {
                         throw err;
                     });
                 }
-                db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,destination,source) values(?,?,?,?,?,?)", [id, amount, balance, "transfer", user_id, "wallet"], (err, result) => {
+                db_1.db.query("insert into transactions(user_id,amount,walletbalance,type,destination,source) values(?,?,?,?,?,?)", [id, amount, balance, "transfer", user_id, id], (err, result) => {
                     if (err) {
                         db_1.db.rollback(() => {
                             res.status(500).json({
